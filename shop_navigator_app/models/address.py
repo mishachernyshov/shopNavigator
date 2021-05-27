@@ -8,8 +8,8 @@ class Address(db.Model):
     country = db.Column(db.String(25), nullable=False)
     city = db.Column(db.String(30), nullable=False)
     street = db.Column(db.String(30), nullable=False)
-    building = db.Column(db.Integer(), nullable=False)
-    shops = db.relationship('Shop', backref='address')
+    building = db.Column(db.String(5), nullable=False)
+    shops = db.relationship('Shop', backref='address', passive_deletes=True)
 
     def __repr__(self):
         return f'Address: {self.country}, {self.city}, {self.street}, {self.building}'

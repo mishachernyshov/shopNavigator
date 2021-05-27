@@ -2,10 +2,13 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_restful import Api
+from shop_navigator_app.config import DevelopmentConfig
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.debug = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Xpohuc490@localhost:5432/shop_db'
+CORS(app)
+app.config.from_object(DevelopmentConfig)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 api = Api(app)
