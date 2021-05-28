@@ -1,13 +1,15 @@
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from shop_navigator_app.models.shop import Shop, shops_products
-from shop_navigator_app.models.product import Product
+from shop_navigator_app.models.shop import shops_products
+from shop_navigator_app.service.shop_product_service \
+    import ShopProductService
+from shop_navigator_app.service.shop_service import ShopService
 from flask import request
 from shop_navigator_app.schemas.shop_products_schema \
     import ShopProductsSchema
 
-from .. import db
+from shop_navigator_app import db
 
 
 class ShopProductsView(Resource):
@@ -16,8 +18,10 @@ class ShopProductsView(Resource):
             return {}, 404
         min_price, max_price, exact_price = self.get_params(request.args)
         conditions = self.get_conditions(exact_price, min_price, max_price)
-        shop_name = self.get_shop_name(id)
-        shop_products = self.get_shop_products(id, conditions)
+        shop_name = ShopService.get_shop_name(db.session, id)
+        shop_products = ShopProductService.get_shop_products(
+            db.session, id, conditions
+        )
         response = self.make_response(shop_name, shop_products)
         return response, 200
 
@@ -46,21 +50,6 @@ class ShopProductsView(Resource):
                 )
         return conditions
 
-    def get_shop_products(self, id, conditions):
-        return db.session.query(
-            shops_products.columns.product_id,
-            shops_products.columns.price,
-            shops_products.columns.count,
-            Product.name
-        ).select_from(
-            shops_products.join(
-                Product, Product.id == shops_products.columns.product_id
-            )
-        ).filter(shops_products.columns.shop_id == id, *conditions).all()
-
-    def get_shop_name(self, id):
-        return db.session.query(Shop.name).filter(Shop.id == id).first()[0]
-
     def make_response(self, shop_name, shop_products):
         return {
             'name': shop_name,
@@ -69,9 +58,10 @@ class ShopProductsView(Resource):
 
     def post(self):
         request_json = request.json
-        query = shops_products.insert().values(request_json)
         try:
-            db.engine.execute(query)
+            ShopProductService.insert_shop_products(
+                db.engine, request_json
+            )
         except ValidationError as e:
             return {'message': str(e)}, 400
         return {'message': 'Ok'}, 201
@@ -80,23 +70,19 @@ class ShopProductsView(Resource):
         product_id = request.args.get('product_id')
         request_json = request.json
         try:
-            db.session.query(shops_products).filter(
-                shops_products.c.shop_id == id,
-                shops_products.c.product_id == product_id
-            ).update(request_json)
-            db.session.commit()
+            ShopProductService.update_shop_products(
+                db.session, id, product_id, request_json
+            )
         except ValidationError as e:
             return {'message': str(e)}, 400
         return {'message': 'Ok'}, 200
 
     def delete(self, id=None):
         product_id = request.args.get('product_id')
-        query = shops_products.delete().where(
-            shops_products.c.shop_id == id,
-            shops_products.c.product_id == product_id
-        )
         try:
-            db.engine.execute(query)
+            ShopProductService.delete_shop_product(
+                db.engine, id, product_id
+            )
         except ValidationError as e:
             return {'message': str(e)}, 400
         return {'message': 'Ok'}, 204

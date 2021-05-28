@@ -1,12 +1,13 @@
 from flask_restful import Resource
-from shop_navigator_app.models.product import Product
+from shop_navigator_app.service.product_service \
+    import ProductService
 
-from .. import db
+from shop_navigator_app import db
 
 
 class ProductsMainInfoView(Resource):
     def get(self):
-        products_main_info = db.session.query(Product.id, Product.name).all()
+        products_main_info = ProductService.get_main_info(db.session)
         response_data = self.structure_product_dict(products_main_info)
         return response_data, 200
 
