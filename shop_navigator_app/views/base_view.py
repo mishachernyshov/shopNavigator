@@ -72,7 +72,9 @@ class BaseView(Resource):
         return self.schema.dump(model_instance), 200
 
     def get_model_instance(self, id):
-        return self.service().get_first_instance_by_id(db.session, id)
+        return self.service().get_first_instance_by_id(
+            db.session, id
+        )
 
     def check_instance_data(self, request_data):
         model_column_set = self.get_model_columns()
