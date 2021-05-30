@@ -8,3 +8,4 @@ script:
   - coverage run --source=shop_navigator_app -m pytest tests/views_test/
 after_success:
   - coveralls
+  - pylint shop_navigator_app/

@@ -1,3 +1,8 @@
+"""
+The shop navigator application that provides APIs to manage
+shops and products in them.
+"""
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -18,5 +23,4 @@ api = Api(app)
 if __name__ == '__main__':
     app.run()
 
-from shop_navigator_app.models import product
 from shop_navigator_app.routes import routes_registering_list

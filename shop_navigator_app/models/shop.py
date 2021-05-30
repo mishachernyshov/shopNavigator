@@ -1,3 +1,7 @@
+"""
+Stores the information about the shops database table.
+"""
+
 from shop_navigator_app import db
 from shop_navigator_app.models.product import Product
 
@@ -11,6 +15,11 @@ shops_products = db.Table(
 
 
 class Shop(db.Model):
+    """
+    Defines the shops database table fields, constrains and
+    functions to work with this model using ORM.
+    """
+
     __tablename__ = 'shops'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(30), nullable=False)
