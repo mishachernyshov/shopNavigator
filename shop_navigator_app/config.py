@@ -11,3 +11,8 @@ class BaseConfig(object):
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
+    TESTING = True
+
+
+class TestConfig(BaseConfig):
+    TESTING = True

@@ -14,7 +14,11 @@ class Shop(db.Model):
     __tablename__ = 'shops'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(30), nullable=False)
-    address_id = db.Column(db.Integer(), db.ForeignKey('addresses.id', ondelete='CASCADE'))
+    address_id = db.Column(
+        db.Integer(),
+        db.ForeignKey('addresses.id', ondelete='CASCADE'),
+        nullable=False
+    )
     about = db.Column(db.Text(), nullable=False)
     products = db.relationship(
         'Product', secondary=shops_products, lazy='subquery',
