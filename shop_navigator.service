@@ -1,0 +1,12 @@
+[Unit]
+Description=Gunicorn instance to serve shop_navigator
+After=network.target
+
+[Service]
+User=myhailo
+Group=www-data
+WorkingDirectory=/home/myhailo/Code/pythonProjects/shop_navigator
+ExecStart=/home/myhailo/Code/pythonProjects/shop_navigator/virtualenv/bin/gunicorn --workers 17 --bind unix:shop_navigator.sock -m 007 shop_navigator_app:app
+
+[Install]
+WantedBy=multi-user.target
