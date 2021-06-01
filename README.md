@@ -1,5 +1,5 @@
 # Shop navigator
-Shop navigator is a web-application that allow clients to manage shops, 
+Shop navigator is the web-application that allow clients to manage shops, 
 collection of products that are available in the system and determine 
 what products should be available in a shop, how much do they cost and 
 how many units of the product are available. So, users can perform CRUD
